@@ -4,8 +4,7 @@ import json
 import os
 from os.path import splitext
 from urllib.parse import urlparse, unquote
-
-import telegram as telegram
+import telegram
 from dotenv import load_dotenv
 
 
@@ -110,7 +109,7 @@ if __name__ == '__main__':
     TOKEN_TG = os.getenv('TELEGRAM_TOKEN')
     CHAT_ID = os.getenv('CHAT_ID')
     bot = telegram.Bot(token=TOKEN_TG)
-    print(bot.get_me())
+    print(f'Параметры бота - {bot.get_me()}')
     bot.send_message(chat_id=CHAT_ID, text='Привет! Это сообщение от бота, назначенного админом этого канала')
 
     print('finish')
