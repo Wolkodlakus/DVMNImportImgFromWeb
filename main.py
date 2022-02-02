@@ -4,7 +4,10 @@ import json
 import os
 from os.path import splitext
 from urllib.parse import urlparse, unquote
+
+import telegram as telegram
 from dotenv import load_dotenv
+
 
 
 def load_images_from_web(dir, url_img, name_img) -> None:
@@ -104,5 +107,10 @@ if __name__ == '__main__':
     fetch_spacex_last_launch()
     load_APOD(30)
     load_EPIC()
+    TOKEN_TG = os.getenv('TELEGRAM_TOKEN')
+    CHAT_ID = os.getenv('CHAT_ID')
+    bot = telegram.Bot(token=TOKEN_TG)
+    print(bot.get_me())
+    bot.send_message(chat_id=CHAT_ID, text='Привет! Это сообщение от бота, назначенного админом этого канала')
 
     print('finish')
