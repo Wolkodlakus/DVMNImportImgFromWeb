@@ -39,7 +39,7 @@ def fetch_spacex_last_launch() -> None:
 
     for img_numb, link_img in enumerate(links[0]['links']['flickr_images']):
         filename = f'spacex{(img_numb+1):02}.jpg'
-        load_images_from_web(dir_name, url, filename)
+        load_images_from_web(dir_name, link_img, filename)
         print(f'save {img_numb+1} img')
 
 
@@ -97,6 +97,9 @@ def load_EPIC():
 if __name__ == '__main__':
     load_dotenv()
     NASA_API_KEY = os.getenv('NASA_API_KEY')
+    TOKEN_TG = os.getenv('TELEGRAM_TOKEN')
+    CHAT_ID = os.getenv('CHAT_ID')
+
     print('=' * 80)
     print('start')
     dir_name = 'images'
@@ -106,10 +109,12 @@ if __name__ == '__main__':
     fetch_spacex_last_launch()
     load_APOD(30)
     load_EPIC()
-    TOKEN_TG = os.getenv('TELEGRAM_TOKEN')
-    CHAT_ID = os.getenv('CHAT_ID')
+
     bot = telegram.Bot(token=TOKEN_TG)
     print(f'Параметры бота - {bot.get_me()}')
     bot.send_message(chat_id=CHAT_ID, text='Привет! Это сообщение от бота, назначенного админом этого канала')
+    bot.send_document(chat_id=CHAT_ID, document=open('images/spacex01.jpg', 'rb'))
+    photo = open('images/spacex02.jpg', 'rb')
+    bot.send_photo(chat_id=CHAT_ID, photo=photo)
 
     print('finish')
