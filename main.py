@@ -1,8 +1,11 @@
+import time
+
 import requests
 from pathlib import Path
 import json
 import os
 from os.path import splitext
+import shutil
 from urllib.parse import urlparse, unquote
 import telegram
 from dotenv import load_dotenv
@@ -93,28 +96,51 @@ def load_EPIC():
         url = f'{url_item}?api_key={NASA_API_KEY}'
         load_images_from_web(dir_name, url, filename)
 
+def load_images():
+
+    Path(dir_name).mkdir(parents=True, exist_ok=True)
+    fetch_spacex_last_launch()
+    load_APOD(25)
+    load_EPIC()
+
+def del_images():
+    print('Удаляем папку images')
+    path = os.path.join(os.path.abspath(os.path.dirname(__file__)), dir_name)
+    shutil.rmtree(path)
+
+def post_img_to_tg_channel():
+    def get_files(root, files):
+        return [os.path.join(root, filename) for filename in files]
+    for root, dirs, files in os.walk(dir_name):
+        files = get_files(root, files)
+        print(files)
+        if files:
+            for file in files:
+                print(file)
+                with open(file, 'rb') as img_file:
+                    photo = img_file.read()
+                    bot.send_photo(chat_id=CHAT_ID, photo=photo)
+                    time.sleep(9)
 
 if __name__ == '__main__':
     load_dotenv()
     NASA_API_KEY = os.getenv('NASA_API_KEY')
     TOKEN_TG = os.getenv('TELEGRAM_TOKEN')
     CHAT_ID = os.getenv('CHAT_ID')
-
+    DELAY_BETWEEN_LAUNCHES = os.getenv('DELAY_BETWEEN_LAUNCHES')
     print('=' * 80)
     print('start')
     dir_name = 'images'
-    # os.makedirs(dir_name, exist_ok=True)
-    Path(dir_name).mkdir(parents=True, exist_ok=True)
 
-    fetch_spacex_last_launch()
-    load_APOD(30)
-    load_EPIC()
+    while True:
+        load_images()
 
-    bot = telegram.Bot(token=TOKEN_TG)
-    print(f'Параметры бота - {bot.get_me()}')
-    bot.send_message(chat_id=CHAT_ID, text='Привет! Это сообщение от бота, назначенного админом этого канала')
-    bot.send_document(chat_id=CHAT_ID, document=open('images/spacex01.jpg', 'rb'))
-    photo = open('images/spacex02.jpg', 'rb')
-    bot.send_photo(chat_id=CHAT_ID, photo=photo)
+        bot = telegram.Bot(token=TOKEN_TG)
+
+        post_img_to_tg_channel()
+
+        del_images()
+
+        time.sleep(DELAY_BETWEEN_LAUNCHES)
 
     print('finish')
