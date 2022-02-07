@@ -64,6 +64,8 @@ def load_images_nasa(dir_name, nasa_key):
 
 if __name__ == '__main__':
     load_dotenv()
+    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s")
     nasa_api_key = os.getenv('NASA_API_KEY')
     dir_name = 'images'
     load_images_nasa(dir_name, nasa_api_key)

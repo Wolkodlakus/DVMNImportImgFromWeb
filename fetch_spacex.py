@@ -60,7 +60,7 @@ def load_images_spacex(dir_name):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s")
     dir_name = 'images'
     load_images_spacex(dir_name)
