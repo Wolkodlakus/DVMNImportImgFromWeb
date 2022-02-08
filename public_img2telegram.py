@@ -23,7 +23,7 @@ def post_img_to_tg_channel(bot, chat_id, dir_name):
             with open(file, 'rb') as img_file:
                 photo = img_file.read()
             bot.send_photo(chat_id=chat_id, photo=photo)
-            time.sleep(10)
+            time.sleep(delay_between_launches)
 
 
 if __name__ == '__main__':
@@ -36,6 +36,7 @@ if __name__ == '__main__':
     delay_between_launches = int(os.getenv('DELAY_BETWEEN_LAUNCHES'))
     dir_name = 'images'
     logging.debug(f'Папка для размещения картинок {dir_name}')
+
     while True:
         logging.info('Запуск цикла загрузки и постинга картинок.')
         logging.info('Начинаем скачивать с SpaceX.')
@@ -49,4 +50,3 @@ if __name__ == '__main__':
 
         del_images(dir_name)
         logging.info('Ждём запуска нового цикла.')
-        time.sleep(delay_between_launches)

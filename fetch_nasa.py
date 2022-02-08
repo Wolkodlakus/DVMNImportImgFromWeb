@@ -4,7 +4,7 @@ import requests
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from fetch_spacex import download_image_from_web, give_file_extension, create_dir
+from load_in_web_to_dir import download_image_from_web, give_file_extension
 
 
 def load_apod(dir_name, nasa_key, num_photo=25):
@@ -22,7 +22,7 @@ def load_apod(dir_name, nasa_key, num_photo=25):
         url_item = item['url']
         filename = f'APOD{img_numb:02}{give_file_extension(url_item)}'
         logging.info(f'save {img_numb} img')
-        if len(give_file_extension(url_item)) > 0:
+        if give_file_extension(url_item):
             download_image_from_web(dir_name, url_item, filename)
         else:
             logging.warning(f'По данному адресу не фотографии -{url_item}')
@@ -38,7 +38,7 @@ def load_epic(dir_name, nasa_key):
     response = requests.get(url, params=params)
     response.raise_for_status()
     url_archive = 'https://api.nasa.gov/EPIC/archive/natural/'
-    create_dir(dir_name)
+    Path(dir_name).mkdir(parents=True, exist_ok=True)
     for img_numb, item in enumerate(response.json(), start=1):
         date_time_item = datetime.strptime(item['date'], '%Y-%m-%d %H:%M:%S')
         name_image = item['image']
@@ -56,8 +56,6 @@ def load_epic(dir_name, nasa_key):
 
 
 def load_images_nasa(dir_name, nasa_key):
-    load_dotenv()
-
     load_apod(dir_name, nasa_key, 5)
     load_epic(dir_name, nasa_key)
 
