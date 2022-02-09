@@ -5,7 +5,7 @@ import requests
 from urllib.parse import urlparse, unquote
 
 
-def download_image_from_web(dir, url_img, name_img, params='') -> None:
+def download_image_from_web(dir, url_img, name_img, params=''):
     response = requests.get(url_img, params=params)
     response.raise_for_status()
     with open(Path(dir, name_img), 'wb') as file:
