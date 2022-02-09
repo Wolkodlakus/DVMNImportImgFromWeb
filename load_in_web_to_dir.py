@@ -11,10 +11,16 @@ def download_image_from_web(dir, url_img, name_img, params='') -> None:
     with open(Path(dir, name_img), 'wb') as file:
         file.write(response.content)
 
+
 def find_filename_in_url(url_string):
     filepath = urlparse(unquote(url_string)).path
     _, filename = os.path.split(filepath)
     return filename
 
+
 def give_file_extension(url_string):
     return splitext(find_filename_in_url(url_string))[-1]
+
+
+if __name__ == '__main__':
+    pass
